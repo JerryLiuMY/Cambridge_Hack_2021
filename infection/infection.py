@@ -4,7 +4,7 @@ new infections, recoveries, and deaths
 '''
 
 import numpy as np
-from path_planning import go_to_location
+from environment.path_planning import go_to_location
 
 
 def find_nearby(population, infection_zone, traveling_infects=False,

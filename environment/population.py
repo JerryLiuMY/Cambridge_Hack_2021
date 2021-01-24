@@ -8,8 +8,8 @@ import os
 
 import numpy as np
 
-from motion import get_motion_parameters
-from utils import check_folder
+from environment.motion import get_motion_parameters
+from tools.utils import check_folder
 
 def initialize_population(Config, mean_age=45, max_age=105,
                           xbounds=[0, 1], ybounds=[0, 1]):
