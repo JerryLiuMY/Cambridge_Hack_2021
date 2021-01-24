@@ -5,10 +5,8 @@ import numpy as np
 from tools.config import Configuration
 from infection.infection import infect, recover_or_die
 from environment.motion import update_positions, out_of_bounds, update_randoms
-from environment.path_planning import set_destination, check_at_destination,\
-keep_at_destination
-from environment.population import initialize_population, initialize_destination_matrix, \
-    save_data, save_population, Population_trackers
+from environment.path_planning import set_destination, check_at_destination, keep_at_destination
+from population import initialize_population, initialize_destination_matrix, save_data, save_population, Population_trackers
 from animation.visualiser import build_fig, draw_tstep, plot_sir
 
 #set seed for reproducibility
