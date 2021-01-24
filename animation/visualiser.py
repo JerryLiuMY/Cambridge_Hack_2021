@@ -7,7 +7,7 @@ import matplotlib as mpl
 import numpy as np
 
 # from environment import build_hospital
-from utils import check_folder
+from tools.utils import check_folder
 
 
 def build_hospital(xmin, xmax, ymin, ymax, plt, addcross=True):

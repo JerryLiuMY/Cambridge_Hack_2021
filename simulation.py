@@ -1,48 +1,35 @@
-import os
 import sys
 
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 
-from config import Configuration, config_error
-from infection import find_nearby, infect, recover_or_die, compute_mortality,\
-healthcare_infection_correction
-from motion import update_positions, out_of_bounds, update_randoms,\
-get_motion_parameters
-from path_planning import go_to_location, set_destination, check_at_destination,\
-keep_at_destination, reset_destinations
-from population import initialize_population, initialize_destination_matrix,\
-set_destination_bounds, save_data, save_population, Population_trackers
-from visualiser import build_fig, draw_tstep, set_style, plot_sir
+from tools.config import Configuration
+from infection.infection import infect, recover_or_die
+from environment.motion import update_positions, out_of_bounds, update_randoms
+from environment.path_planning import set_destination, check_at_destination, keep_at_destination
+from population import initialize_population, initialize_destination_matrix, save_data, save_population, Population_trackers
+from animation.visualiser import build_fig, draw_tstep, plot_sir
 
 #set seed for reproducibility
 #np.random.seed(100)
 
+
 class Simulation():
-    #TODO: if lockdown or otherwise stopped: destination -1 means no motion
+    # TODO: if lockdown or otherwise stopped: destination -1 means no motion
     def __init__(self, *args, **kwargs):
-        #load default config data
+        # load default config data
         self.Config = Configuration(*args, **kwargs)
         self.frame = 0
 
-        #initialize default population
+        # initialize default population
         self.population_init()
-
         self.pop_tracker = Population_trackers()
 
-        #initalise destinations vector
-        self.destinations = initialize_destination_matrix(self.Config.pop_size, 1) 
-
-
-
+        # initalise destinations vector
+        self.destinations = initialize_destination_matrix(self.Config.pop_size, 1)
 
         # self.destinations[0] = 10       
         # self.destinations[1] = 10
-        # self.population, self.destinations = set_destination_bounds(self.population, self.destinations, 5, 5, 15, 15)       
-
-
-
+        # self.population, self.destinations = set_destination_bounds(self.population, self.destinations, 5, 5, 15, 15)
 
     def reinitialise(self):
         '''reset the simulation'''
@@ -52,13 +39,11 @@ class Simulation():
         self.pop_tracker = Population_trackers()
         self.destinations = initialize_destination_matrix(self.Config.pop_size, 1)
 
-
     def population_init(self):
         '''(re-)initializes population'''
         self.population = initialize_population(self.Config, self.Config.mean_age, 
                                                 self.Config.max_age, self.Config.xbounds, 
                                                 self.Config.ybounds)
-
 
     def tstep(self):
         '''
@@ -85,8 +70,8 @@ class Simulation():
             self.population = keep_at_destination(self.population, self.destinations,
                                                   self.Config.wander_factor)
 
-        #out of bounds
-        #define bounds arrays, excluding those who are marked as having a custom destination
+        # out of bounds
+        # define bounds arrays, excluding those who are marked as having a custom destination
         if len(self.population[:,11] == 0) > 0:
             _xbounds = np.array([[self.Config.xbounds[0] + 0.02, self.Config.xbounds[1] - 0.02]] * len(self.population[self.population[:,11] == 0]))
             _ybounds = np.array([[self.Config.ybounds[0] + 0.02, self.Config.ybounds[1] - 0.02]] * len(self.population[self.population[:,11] == 0]))
@@ -207,12 +192,9 @@ dead: %i, of total: %i' %(self.frame, self.pop_tracker.susceptible[-1], self.pop
         print('total infectious: %i' %len(self.population[(self.population[:,6] == 1) |
                                                           (self.population[:,6] == 4)]))
         print('total unaffected: %i' %len(self.population[self.population[:,6] == 0]))
-        
 
-    def plot_sir(self, size=(6,3), include_fatalities=False, 
-                 title='S-I-R plot of simulation'):
-        plot_sir(self.Config, self.pop_tracker, size, include_fatalities,
-                 title)
+    def plot_sir(self, size=(6,3), include_fatalities=False, title='S-I-R plot of simulation'):
+        plot_sir(self.Config, self.pop_tracker, size, include_fatalities, title)
 
 
 
